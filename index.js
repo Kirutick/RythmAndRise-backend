@@ -37,8 +37,21 @@ app.use(helmet({
 }));
 
 // ── CORS ─────────────────────────────────────────────────────────
+// ── CORS ─────────────────────────────────────────────────────────
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'https://rythmnrise.com',
+  origin: (origin, callback) => {
+    const allowed = [
+      process.env.FRONTEND_URL || 'https://rythmnrise.com',
+      'https://rythmnrise.com',
+      'https://www.rythmnrise.com',
+    ];
+    // Allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin || allowed.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS blocked: ${origin}`));
+    }
+  },
   credentials: true
 }));
 
