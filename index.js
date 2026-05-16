@@ -36,7 +36,7 @@ app.use(helmet({
 
 // ── CORS ─────────────────────────────────────────────────────────
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: process.env.FRONTEND_URL || 'rythmandrise-backend-production.up.railway.app',
   credentials: true
 }));
 
@@ -63,7 +63,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'rhythm_rise_super_secret_key';
 const UPLOADS_DIR = path.join(__dirname, 'uploads');
 
 if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR);
-app.use('/uploads', express.static(UPLOADS_DIR)); // Serve uploaded files
+app.use('rythmandrise-backend-production.up.railway.app/uploads', express.static(UPLOADS_DIR)); // Serve uploaded files
 
 // ── File Upload Security (Multer) ────────────────────────────────
 const storage = multer.diskStorage({
@@ -172,7 +172,7 @@ app.post('rythmandrise-backend-production.up.railway.app/api/upload', uploadLimi
 });
 
 // Apply rate limiter to auth routes
-app.use('/api/auth', authLimiter);
+app.use('rythmandrise-backend-production.up.railway.app/api/auth', authLimiter);
 
 // ── Signup Step 1: validate fields, send OTP to email ────────────
 app.post('rythmandrise-backend-production.up.railway.app/api/auth/signup/step1', async (req, res) => {
@@ -332,7 +332,7 @@ app.post('rythmandrise-backend-production.up.railway.app/api/auth/otp/resend', a
 });
 
 // ── Verify Session via HttpOnly Cookie ───────────────────────────
-app.get('/api/auth/verify', async (req, res) => {
+app.get('rythmandrise-backend-production.up.railway.app/api/auth/verify', async (req, res) => {
   try {
     const token = req.cookies.token;
     if (!token) {
