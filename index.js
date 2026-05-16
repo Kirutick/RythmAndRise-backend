@@ -153,7 +153,7 @@ const sendEmailOTP = async (toEmail, otp) => {
 // ================================================================
 
 // ── File Upload Endpoint ─────────────────────────────────────────
-app.post('/api/upload', uploadLimiter, upload.single('media'), (req, res) => {
+app.post('rythmandrise-backend-production.up.railway.app/api/upload', uploadLimiter, upload.single('media'), (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ success: false, message: 'No file uploaded or invalid format' });
     // Sanitize title
@@ -175,7 +175,7 @@ app.post('/api/upload', uploadLimiter, upload.single('media'), (req, res) => {
 app.use('/api/auth', authLimiter);
 
 // ── Signup Step 1: validate fields, send OTP to email ────────────
-app.post('/api/auth/signup/step1', async (req, res) => {
+app.post('rythmandrise-backend-production.up.railway.app/api/auth/signup/step1', async (req, res) => {
   try {
     let { email, password, name } = req.body;
 
@@ -216,7 +216,7 @@ app.post('/api/auth/signup/step1', async (req, res) => {
 });
 
 // ── Signup Step 2: verify OTP, create account ────────────────────
-app.post('/api/auth/signup/step2', async (req, res) => {
+app.post('rythmandrise-backend-production.up.railway.app/api/auth/signup/step2', async (req, res) => {
   try {
     const { otp, verificationId } = req.body;
     const stored = otpStore.get(verificationId);
@@ -235,7 +235,7 @@ app.post('/api/auth/signup/step2', async (req, res) => {
 });
 
 // ── Login Step 1: validate credentials, send OTP ─────────────────
-app.post('/api/auth/login/step1', async (req, res) => {
+app.post('rythmandrise-backend-production.up.railway.app/api/auth/login/step1', async (req, res) => {
   try {
     let { email, password, role } = req.body;
 
@@ -282,7 +282,7 @@ app.post('/api/auth/login/step1', async (req, res) => {
 });
 
 // ── Login Step 2: verify OTP, issue JWT in HttpOnly Cookie ───────
-app.post('/api/auth/login/step2', async (req, res) => {
+app.post('rythmandrise-backend-production.up.railway.app/api/auth/login/step2', async (req, res) => {
   try {
     const { otp, verificationId } = req.body;
     const stored = otpStore.get(verificationId);
@@ -309,7 +309,7 @@ app.post('/api/auth/login/step2', async (req, res) => {
 });
 
 // ── Resend OTP ────────────────────────────────────────────────────
-app.post('/api/auth/otp/resend', async (req, res) => {
+app.post('rythmandrise-backend-production.up.railway.app/api/auth/otp/resend', async (req, res) => {
   try {
     const { verificationId } = req.body;
     const stored = otpStore.get(verificationId);
@@ -346,7 +346,7 @@ app.get('/api/auth/verify', async (req, res) => {
 });
 
 // ── Logout ───────────────────────────────────────────────────────
-app.post('/api/auth/logout', (req, res) => {
+app.post('rythmandrise-backend-production.up.railway.app/api/auth/logout', (req, res) => {
   res.clearCookie('token', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
