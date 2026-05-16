@@ -94,16 +94,17 @@ const upload = multer({
 // ── Nodemailer transporter ───────────────────────────────────────
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
+  port: 587,
+  secure: false,           // use STARTTLS, not SSL
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
   },
   tls: {
-    family: 4,
     rejectUnauthorized: false
-  }
+  },
+  // ✅ This is what forces IPv4 — must be at the TOP level, not inside tls
+  family: 4
 });
 transporter.verify(function(error, success) {
   if (error) {
