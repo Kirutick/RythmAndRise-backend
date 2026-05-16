@@ -29,6 +29,8 @@ if (process.env.NODE_ENV !== 'production') {
 
 const app = express();
 
+app.set('trust proxy', 1);
+
 // ── Security Headers (Helmet) ────────────────────────────────────
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" } // Allow images/videos to load
@@ -94,10 +96,19 @@ const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
   secure: false,
-  family: 4, // force IPv4
+  requireTLS: true,
+  family: 4,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
+  }
+});
+
+transporter.verify(function(error, success) {
+  if (error) {
+    console.log("Mail error:", error);
+  } else {
+    console.log("Mail server ready");
   }
 });
 
