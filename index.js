@@ -36,7 +36,7 @@ app.use(helmet({
 
 // ── CORS ─────────────────────────────────────────────────────────
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'rythmandrise-backend-production.up.railway.app',
+  origin: process.env.FRONTEND_URL || 'https://rythmnrise.com',
   credentials: true
 }));
 
@@ -63,7 +63,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'rhythm_rise_super_secret_key';
 const UPLOADS_DIR = path.join(__dirname, 'uploads');
 
 if (!fs.existsSync(UPLOADS_DIR)) fs.mkdirSync(UPLOADS_DIR);
-app.use('rythmandrise-backend-production.up.railway.app/uploads', express.static(UPLOADS_DIR)); // Serve uploaded files
+app.use('/uploads', express.static(UPLOADS_DIR)); // Serve uploaded files
 
 // ── File Upload Security (Multer) ────────────────────────────────
 const storage = multer.diskStorage({
@@ -153,7 +153,7 @@ const sendEmailOTP = async (toEmail, otp) => {
 // ================================================================
 
 // ── File Upload Endpoint ─────────────────────────────────────────
-app.post('rythmandrise-backend-production.up.railway.app/api/upload', uploadLimiter, upload.single('media'), (req, res) => {
+app.post('/api/upload', uploadLimiter, upload.single('media'), (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ success: false, message: 'No file uploaded or invalid format' });
     // Sanitize title
@@ -172,10 +172,10 @@ app.post('rythmandrise-backend-production.up.railway.app/api/upload', uploadLimi
 });
 
 // Apply rate limiter to auth routes
-app.use('rythmandrise-backend-production.up.railway.app/api/auth', authLimiter);
+app.use('/api/auth', authLimiter);
 
 // ── Signup Step 1: validate fields, send OTP to email ────────────
-app.post('rythmandrise-backend-production.up.railway.app/api/auth/signup/step1', async (req, res) => {
+app.post('/api/auth/signup/step1', async (req, res) => {
   try {
     let { email, password, name } = req.body;
 
@@ -216,7 +216,7 @@ app.post('rythmandrise-backend-production.up.railway.app/api/auth/signup/step1',
 });
 
 // ── Signup Step 2: verify OTP, create account ────────────────────
-app.post('rythmandrise-backend-production.up.railway.app/api/auth/signup/step2', async (req, res) => {
+app.post('/api/auth/signup/step2', async (req, res) => {
   try {
     const { otp, verificationId } = req.body;
     const stored = otpStore.get(verificationId);
@@ -235,7 +235,7 @@ app.post('rythmandrise-backend-production.up.railway.app/api/auth/signup/step2',
 });
 
 // ── Login Step 1: validate credentials, send OTP ─────────────────
-app.post('rythmandrise-backend-production.up.railway.app/api/auth/login/step1', async (req, res) => {
+app.post('/api/auth/login/step1', async (req, res) => {
   try {
     let { email, password, role } = req.body;
 
@@ -282,7 +282,7 @@ app.post('rythmandrise-backend-production.up.railway.app/api/auth/login/step1', 
 });
 
 // ── Login Step 2: verify OTP, issue JWT in HttpOnly Cookie ───────
-app.post('rythmandrise-backend-production.up.railway.app/api/auth/login/step2', async (req, res) => {
+app.post('/api/auth/login/step2', async (req, res) => {
   try {
     const { otp, verificationId } = req.body;
     const stored = otpStore.get(verificationId);
@@ -309,7 +309,7 @@ app.post('rythmandrise-backend-production.up.railway.app/api/auth/login/step2', 
 });
 
 // ── Resend OTP ────────────────────────────────────────────────────
-app.post('rythmandrise-backend-production.up.railway.app/api/auth/otp/resend', async (req, res) => {
+app.post('/api/auth/otp/resend', async (req, res) => {
   try {
     const { verificationId } = req.body;
     const stored = otpStore.get(verificationId);
@@ -332,7 +332,7 @@ app.post('rythmandrise-backend-production.up.railway.app/api/auth/otp/resend', a
 });
 
 // ── Verify Session via HttpOnly Cookie ───────────────────────────
-app.get('rythmandrise-backend-production.up.railway.app/api/auth/verify', async (req, res) => {
+app.get('/api/auth/verify', async (req, res) => {
   try {
     const token = req.cookies.token;
     if (!token) {
@@ -346,7 +346,7 @@ app.get('rythmandrise-backend-production.up.railway.app/api/auth/verify', async 
 });
 
 // ── Logout ───────────────────────────────────────────────────────
-app.post('rythmandrise-backend-production.up.railway.app/api/auth/logout', (req, res) => {
+app.post('/api/auth/logout', (req, res) => {
   res.clearCookie('token', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
