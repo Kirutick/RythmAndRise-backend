@@ -94,16 +94,17 @@ const upload = multer({
 // ── Nodemailer transporter ───────────────────────────────────────
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
-  requireTLS: true,
-  family: 4,
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
+  },
+  tls: {
+    family: 4,
+    rejectUnauthorized: false
   }
 });
-
 transporter.verify(function(error, success) {
   if (error) {
     console.log("Mail error:", error);
